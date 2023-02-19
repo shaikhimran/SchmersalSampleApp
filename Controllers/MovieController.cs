@@ -1,12 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using SchmersalSampleAppLib.Model;
+﻿using Microsoft.AspNetCore.Mvc;
 using SchmersalSampleAppLib.Interface;
-using System.Collections.Generic;
+using SchmersalSampleAppLib.Model;
 
 namespace SchmersalSampleApp.Controllers
 {
-   
+
     [ApiController]
     public class MovieController : ControllerBase
     {
@@ -25,7 +23,7 @@ namespace SchmersalSampleApp.Controllers
         [HttpPost]
         public IActionResult GetByGenre(string Genre)
         {
-            Response httpResponse = new Response { IsSuccess = true, Errors = new System.Collections.Generic.List<Error>()};
+            Response httpResponse = new Response { IsSuccess = true};
             try
             {
                 
@@ -37,14 +35,15 @@ namespace SchmersalSampleApp.Controllers
                 }
 
                 var moviesList = _requestHandler.GetMoviesByGenere(Genre);
+               
                 httpResponse.Movies.AddRange(moviesList);
 
                 return Ok(httpResponse);
             }
-            catch (System.Exception)
+            catch (System.Exception ex)
             {
                 httpResponse.IsSuccess = false;
-                httpResponse.Errors.Add(new Error { Message = $"'{nameof(Genre)}' cannot be null or empty." });
+                httpResponse.Errors.Add(new Error { Message = ex.Message });
                 return BadRequest(httpResponse);
 
             }
